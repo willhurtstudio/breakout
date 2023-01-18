@@ -5,6 +5,14 @@ Accompanying code for the StackAbuse article [Introduction to Phaser 3: Building
 Juice it or lose it - a talk by Martin Jonasson & Petri Purho
 https://www.youtube.com/watch?v=Fy0aCDmgnxg
 
+Where to find help:-
+https://github.com/willhurtstudio/breakout
+// Phaser DOCS // Your previous projects 
+// Quick Google "Read Input from Mouse"
+// Reddit // Stack Overflow // Phaser Examples  
+// Youtube Videos // Javascript Books 
+/ Teacher // Students // Parents // Github
+
 Tasks
 - TASK 1 - move paddle with a mouse
 - TASK 2 - restart level after loss
