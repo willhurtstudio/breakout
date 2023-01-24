@@ -1,4 +1,4 @@
-/// *** FROM LIAM ***
+/// *** FROM LIAM & LIAM ***
 if(ball.x >= 780 || ball.x <= 20){
     xBounce = ball.x
     yBounce = ball.y
