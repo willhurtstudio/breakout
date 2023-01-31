@@ -1,7 +1,7 @@
 //const { Tilemaps } = require("phaser");
 
 // Game objects are global variables so that many functions can access them
-let player, ball, violetBricks, yellowBricks, redBricks, cursors;
+let player, ball, violetBricks, yellowBricks, redBricks, cursors, ball2;
 // Variable to determine if we started playing
 let gameStarted = false;
 // Add global text objects
@@ -60,10 +60,18 @@ const game = new Phaser.Game(config);
  */
 function preload() {
   this.load.image('ball', 'assets/images/ball_32_32.png');
+  this.load.image('ball2', 'assets/images/ball_32_32.png');
   this.load.image('paddle', 'assets/images/paddle_128_32.png');
   this.load.image('brick1', 'assets/images/brick1_64_32.png');
   this.load.image('brick2', 'assets/images/brick2_64_32.png');
   this.load.image('brick3', 'assets/images/brick3_64_32.png');
+  this.load.audio('paddlehit', 'assets/audio/paddlehit.wav');
+  this.load.audio('coin1', 'assets/audio/coin1.wav');
+  this.load.audio('coin2', 'assets/audio/coin2.wav');
+  this.load.audio('coin3', 'assets/audio/coin3.wav');
+  this.load.audio('shake', 'assets/audio/twow.wav');
+  this.sound.unlock();
+
 }
 
 /**
@@ -107,14 +115,17 @@ function create() {
   // Add yellow bricks
   yellowBricks = this.physics.add.group({
     key: 'brick2',
-    repeat: 9,
+    repeat: 12,
     immovable: true,
+    setAngle: 12,
     setXY: {
       x: 80,
-      y: 90,
+      y: 250,
       stepX: 70
     }
-  });
+  });  
+  
+
 
   // Add red bricks
   redBricks = this.physics.add.group({
@@ -208,6 +219,7 @@ function create() {
 
   // Make it invisible until the player wins
   playerWonText.setVisible(false);
+
 }
 
 /**
@@ -250,7 +262,7 @@ function update() {
 
       if (cursors.space.isDown ) {
         gameStarted = true;
-        ball.setVelocityY(-200);
+        ball.setVelocityY(-375);
         openingText.setVisible(false);
       }
     }
@@ -284,18 +296,35 @@ function isWon() {
  * @param brick - the brick sprite
  */
 function hitBrick(ball, brick) {
+  // Brick tween
   let tween = brick.scene.tweens.addCounter({
     targets: brick,
-    from: 1,
+    from: 10,
     to: 0,
     ease: "Sine.easeOut",
-    duration: 200,
-    onUpdate: function(tween){brick.setAngle(tween.getValue() * -40);
-                              brick.scaleX = tween.getValue()
-                              brick.scaleY = tween.getValue()},
+    duration: 275,
+    onUpdate: function(tween){brick.setAngle(tween.getValue() * -65);
+                              brick.scaleX = tween.getValue() * 0.25,
+                              brick.scaleY = tween.getValue() * 0.25},
     onComplete:()=>{brick.disableBody(true, true);}  
   })
+  //Screen shake
   
+  
+  let pitchConfig = {
+    mute: false,
+    volume: 1,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: false,
+    delay: 0
+  }
+
+  ball.scene.cameras.main.shake(400,0.01, true);
+  ball.scene.sound.play('shake');
+  pitchConfig.rate += 0.1;
+  ball.scene.sound.play('coin1', pitchConfig);
 
   if (ball.body.velocity.x == 0) {
     randNum = Math.random();
@@ -317,15 +346,20 @@ function hitBrick(ball, brick) {
  */
 function hitPlayer(ball, player) {
   // Increase the velocity of the ball after it bounces
-  ball.setVelocityY(ball.body.velocity.y - 5);
+  ball.setVelocityY(ball.body.velocity.y - 25);
 
-  let newXVelocity = Math.abs(ball.body.velocity.x) + 5;
+  let newXVelocity = Math.abs(ball.body.velocity.x) + 25;
   // If the ball is to the left of the player, ensure the x velocity is negative
   if (ball.x < player.x) {
     ball.setVelocityX(-newXVelocity);
   } else {
     ball.setVelocityX(newXVelocity);
   }
+
+  console.log("ball:" + ball.x + "player:" + player.x);
+  ball.scene.sound.play('paddlehit');
+  ball.scene.cameras.main.shake(600,0.001, true);
+  ball.scene.sound.play('shake');
 }
 // *** TASK 2 RESTART SCENE ***
 function RestartScene(scene){
