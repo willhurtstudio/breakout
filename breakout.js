@@ -79,7 +79,15 @@ function preload() {
  * defined here. We also set up our physics rules here
  */
 function create() {
-
+  let pitchConfig = {
+    mute: false,
+    volume: 1,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: false,
+    delay: 0
+  }
   // *** TASK 2 RESTART ON KEYPRESS ***
   keyRestart = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
   /**
@@ -311,19 +319,11 @@ function hitBrick(ball, brick) {
   //Screen shake
   
   
-  let pitchConfig = {
-    mute: false,
-    volume: 1,
-    rate: 1,
-    detune: 0,
-    seek: 0,
-    loop: false,
-    delay: 0
-  }
+ 
 
   ball.scene.cameras.main.shake(400,0.01, true);
   ball.scene.sound.play('shake');
-  pitchConfig.rate += 0.1;
+  ball.scene.pitchConfig.rate += 0.1;
   ball.scene.sound.play('coin1', pitchConfig);
 
   if (ball.body.velocity.x == 0) {
