@@ -1,7 +1,7 @@
 //const { Tilemaps } = require("phaser");
 
 // Game objects are global variables so that many functions can access them
-let player, ball, violetBricks, yellowBricks, redBricks, cursors, ball2;
+let player, ball, violetBricks, yellowBricks, redBricks, cursors, ball2, pitchConfig;
 // Variable to determine if we started playing
 let gameStarted = false;
 // Add global text objects
@@ -79,7 +79,7 @@ function preload() {
  * defined here. We also set up our physics rules here
  */
 function create() {
-  let pitchConfig = {
+  pitchConfig = {
     mute: false,
     volume: 1,
     rate: 1,
@@ -323,7 +323,7 @@ function hitBrick(ball, brick) {
 
   ball.scene.cameras.main.shake(400,0.01, true);
   ball.scene.sound.play('shake');
-  ball.scene.pitchConfig.rate += 0.1;
+  pitchConfig.rate += 0.1;
   ball.scene.sound.play('coin1', pitchConfig);
 
   if (ball.body.velocity.x == 0) {
