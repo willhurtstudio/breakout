@@ -1,11 +1,11 @@
 //const { Tilemaps } = require("phaser");
 
 // Game objects are global variables so that many functions can access them
-let player, ball, violetBricks, yellowBricks, redBricks, cursors, ball2, pitchConfig, score;
+let player, ball, violetBricks, yellowBricks, redBricks, cursors, ball2, pitchConfig, score, highScore;
 // Variable to determine if we started playing
 let gameStarted = false;
 // Add global text objects
-let openingText, gameOverText, playerWonText, scoreText;
+let openingText, gameOverText, playerWonText, scoreText, highScoreText;
 
 // This object contains all the Phaser configurations to load our game
 const config = {
@@ -45,11 +45,13 @@ const config = {
     arcade: {
       gravity: false
     },
-  }
+  },
+  myHighScore: 0
 };
 
 // Create the game instance
 const game = new Phaser.Game(config);
+game.config.myHighScore = 0;
 //var game = scene.scene.add("mainScene", config, true);
 
 
@@ -71,6 +73,8 @@ function preload() {
   this.load.audio('coin3', 'assets/audio/coin3.wav');
   this.load.audio('shake', 'assets/audio/twow.wav');
   this.sound.unlock();
+
+
 
 }
 
@@ -228,7 +232,7 @@ function create() {
   // Make it invisible until the player wins
   playerWonText.setVisible(false);
   
-  // Create the game won text
+  // Create the gamescore
   scoreText = this.add.text(
     50,
     50,
@@ -239,6 +243,21 @@ function create() {
       fill: '#fff'
     },
   );
+
+  highScoreText = this.add.text(
+    50,
+    100,
+    'High Score :',
+    {
+      fontFamily: 'Monaco, Courier, monospace',
+      fontSize: '50px',
+      fill: '#fff'
+    },
+  );
+
+  score = 0;
+  highScoreText.text = 'High Score :' + this.game.config.myHighScore; 
+
 }
 
 /**
@@ -248,12 +267,15 @@ function create() {
 function update() {
   // *** TASK 2 RESTART ON KEYPRESS ***
   if(keyRestart.isDown) {
-    RestartScene(this.scene);
+    RestartScene(this.scene, highScore);
 
   }
   // Check if the ball left the scene i.e. game over
   if (isGameOver(this.physics.world)) {
-    RestartScene(this.scene);
+    if(score > this.game.config.myHighScore){
+      this.game.config.myHighScore = score;
+    }
+    RestartScene(this.scene, highScore);
 
   } else if (isWon()) {
     playerWonText.setVisible(true);
@@ -345,6 +367,8 @@ function hitBrick(ball, brick) {
       ball.body.setVelocityX(-150);
     }
   }
+  score += 50;
+  scoreText.text = 'Score :' + score;
 }
 
 /**
@@ -373,11 +397,12 @@ function hitPlayer(ball, player) {
   ball.scene.sound.play('shake');
 }
 // *** TASK 2 RESTART SCENE ***
-function RestartScene(scene){
+function RestartScene(scene, high){
   gameOverText.setVisible(true);
   ball.disableBody(false, true);
   
   // *** TASK 2 RESTART ***
   scene.start(); 
   gameStarted = false;
+  
 }
