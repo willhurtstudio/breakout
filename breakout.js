@@ -1,11 +1,11 @@
 //const { Tilemaps } = require("phaser");
 
 // Game objects are global variables so that many functions can access them
-let player, ball, violetBricks, yellowBricks, redBricks, cursors, ball2, pitchConfig;
+let player, ball, violetBricks, yellowBricks, redBricks, cursors, ball2, pitchConfig, score;
 // Variable to determine if we started playing
 let gameStarted = false;
 // Add global text objects
-let openingText, gameOverText, playerWonText;
+let openingText, gameOverText, playerWonText, scoreText;
 
 // This object contains all the Phaser configurations to load our game
 const config = {
@@ -227,7 +227,18 @@ function create() {
 
   // Make it invisible until the player wins
   playerWonText.setVisible(false);
-
+  
+  // Create the game won text
+  scoreText = this.add.text(
+    50,
+    50,
+    'Score :',
+    {
+      fontFamily: 'Monaco, Courier, monospace',
+      fontSize: '50px',
+      fill: '#fff'
+    },
+  );
 }
 
 /**
@@ -270,7 +281,7 @@ function update() {
 
       if (cursors.space.isDown ) {
         gameStarted = true;
-        ball.setVelocityY(-375);
+        ball.setVelocityY(-400);
         openingText.setVisible(false);
       }
     }
