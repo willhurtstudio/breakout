@@ -383,15 +383,20 @@ function hitPlayer(ball, player) {
   // Increase the velocity of the ball after it bounces
   ball.setVelocityY(ball.body.velocity.y - 25);
 
-  let newXVelocity = Math.abs(ball.body.velocity.x) + 25;
+  let newXVelocity = Math.abs(ball.body.velocity.x);
+  
+  // work out distance form centre of paddle then multiply this by edge factor for more edge angle
+  let edgeFactor = 2;
+  let distanceFromCentreOfPaddle =  Math.abs(ball.x - player.x) * edgeFactor ;
+  console.log("distance" + distanceFromCentreOfPaddle);
   // If the ball is to the left of the player, ensure the x velocity is negative
   if (ball.x < player.x) {
-    ball.setVelocityX(-newXVelocity);
+    ball.body.velocity.x = (-newXVelocity - distanceFromCentreOfPaddle);
   } else {
-    ball.setVelocityX(newXVelocity);
+    ball.body.velocity.x = (newXVelocity - distanceFromCentreOfPaddle);
   }
 
-  console.log("ball:" + ball.x + "player:" + player.x);
+  //console.log("ball:" + ball.x);
   ball.scene.sound.play('paddlehit');
   ball.scene.cameras.main.shake(600,0.001, true);
   ball.scene.sound.play('shake');
